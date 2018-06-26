@@ -2,6 +2,8 @@
 <%@ page import="beans.BuyDataBeans"%>
 <%@ page import="beans.UserDataBeans"%>
 <%@ page import=" java.util.ArrayList"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,10 +80,10 @@
 								<%
 									for(BuyDataBeans bdb : BDB){
 								%>
-									<td class="center"><a href="UserBuyHistoryDetail?user_id=<%=udb.getId() %>" class="btn-floating btn waves-effect waves-light "> <i class="material-icons">details</i></a></td>
-									<td class="center"><%=bdb.getBuyDate() %></td>
+									<td class="center"><a href="UserBuyHistoryDetail?id=<%=bdb.getId() %>" class="btn-floating btn waves-effect waves-light "> <i class="material-icons">details</i></a></td>
+									<td class="center"><%=bdb.getFormatDate() %></td>
 									<td class="center"><%=bdb.getDeliveryMethodName() %></td>
-									<td class="center"><%=bdb.getTotalPrice() %>円</td>
+									<td class="center"><%=bdb.getTotalPrice()+bdb.getDeliveryMethodPrice()%>円</td>
 								</tr>
 								<%
 									}

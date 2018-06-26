@@ -57,12 +57,13 @@ public class BuyDAO {
 	/**
 	 * 購入IDによる購入情報検索
 	 * @param buyId
+	 * @return
 	 * @return BuyDataBeans
 	 * 				購入情報のデータを持つJavaBeansのリスト
 	 * @throws SQLException
 	 * 				呼び出し元にスローさせるため
 	 */
-	public static  getBuyDataBeansByBuyId(int buyId) throws SQLException {
+	public static BuyDataBeans getBuyDataBeansByBuyId(int buyId) throws SQLException {
 		Connection con = null;
 		PreparedStatement st = null;
 		try {
@@ -77,9 +78,9 @@ public class BuyDAO {
 
 			ResultSet rs = st.executeQuery();
 
-			BuyDataBeans bdb = new BuyDataBeans();
-			while (rs.next()) {
 
+			if (rs.next()) {
+				BuyDataBeans bdb = new BuyDataBeans();
 				bdb.setId(rs.getInt("id"));
 				bdb.setTotalPrice(rs.getInt("total_price"));
 				bdb.setBuyDate(rs.getTimestamp("create_date"));
@@ -87,11 +88,13 @@ public class BuyDAO {
 				bdb.setUserId(rs.getInt("user_id"));
 				bdb.setDeliveryMethodPrice(rs.getInt("price"));
 				bdb.setDeliveryMethodName(rs.getString("name"));
+				return bdb;
 			}
+
 
 			System.out.println("searching BuyDataBeans by buyID has been completed");
 
-			return bdb;
+
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			throw new SQLException(e);
@@ -100,6 +103,7 @@ public class BuyDAO {
 				con.close();
 			}
 		}
+		return null;
 	}
 
 	public static ArrayList<BuyDataBeans> getBuyDataBeansByUserId(int userId) throws SQLException {
@@ -117,8 +121,50 @@ public class BuyDAO {
 
 			ResultSet rs = st.executeQuery();
 
-			ArrayList<BuyDataBeans> BDB = new ArrayList<>();
-			while (rs.next()) {
+			ArrayList<BuyDataBeans> BDB= new ArrayList<>();
+			while(rs.next()) {
+				BuyDataBeans bdb = new BuyDataBeans();
+				bdb.setId(rs.getInt("id"));
+				bdb.setTotalPrice(rs.getInt("total_price"));
+				bdb.setBuyDate(rs.getTimestamp("create_date"));
+				bdb.setDelivertMethodId(rs.getInt("delivery_method_id"));
+				bdb.setUserId(rs.getInt("user_id"));
+				bdb.setDeliveryMethodPrice(rs.getInt("price"));
+				bdb.setDeliveryMethodName(rs.getString("name"));
+				BDB.add(bdb);
+			}
+
+			System.out.println("searching BuyDataBeans by buyID has been completed");
+
+			return BDB;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new SQLException(e);
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+		}
+	}
+
+
+	public static ArrayList<BuyDataBeans> getBuyDataBeansById(int Id) throws SQLException {
+		Connection con = null;
+		PreparedStatement st = null;
+		try {
+			con = DBManager.getConnection();
+
+			st = con.prepareStatement(
+					"SELECT * FROM t_buy"
+							+ " JOIN m_delivery_method"
+							+ " ON t_buy.delivery_method_id = m_delivery_method.id"
+							+ " WHERE t_buy.id = ?");
+			st.setInt(1, Id);
+
+			ResultSet rs = st.executeQuery();
+
+			ArrayList<BuyDataBeans> BDB= new ArrayList<>();
+			while(rs.next()) {
 				BuyDataBeans bdb = new BuyDataBeans();
 				bdb.setId(rs.getInt("id"));
 				bdb.setTotalPrice(rs.getInt("total_price"));

@@ -2,6 +2,9 @@
 <%@ page import="beans.BuyDataBeans"%>
 <%@ page import="beans.UserDataBeans"%>
 <%@ page import=" java.util.ArrayList"%>
+<%@ page import="beans.BuyDetailDataBeans" %>
+<%@ page import="beans.ItemDataBeans" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +13,7 @@
 <jsp:include page="/baselayout/head.html" />
 <%
 	ArrayList<BuyDataBeans> BDB= (ArrayList<BuyDataBeans>)request.getAttribute("BDB");
+ 	ArrayList<ItemDataBeans> buyDetailItemList = (ArrayList<ItemDataBeans>)request.getAttribute("buyDetailItemList");
  %>
 </head>
 <body>
@@ -35,10 +39,16 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td class="center"><%=bdb.getBuyData()%></td>
+								<%
+									for(BuyDataBeans bdb : BDB){
+								%>
+									<td class="center"><%=bdb.getFormatDate()%></td>
 									<td class="center"><%=bdb.getDeliveryMethodName()%></td>
-									<td class="center"><%=bdb.getTotalPrice()%>円</td>
+									<td class="center"><%=bdb.getTotalPrice()+bdb.getDeliveryMethodPrice()%>円</td>
 								</tr>
+								<%
+									}
+								%>
 							</tbody>
 						</table>
 					</div>
@@ -58,22 +68,27 @@
 								</tr>
 							</thead>
 							<tbody>
+								<%
+									for(ItemDataBeans itemlist : buyDetailItemList){
+								%>
 								<tr>
-									<td class="center">サンプル商品名1</td>
-									<td class="center">111111111円</td>
+									<td class="center"><%=itemlist.getName()%></td>
+									<td class="center"><%=itemlist.getPrice()%>円</td>
+								<%
+									}
+								%>
 								</tr>
+								<%
+									for(BuyDataBeans bdb : BDB){
+								%>
+
 								<tr>
-									<td class="center">サンプル商品名2</td>
-									<td class="center">222222222円</td>
+									<td class="center"><%=bdb.getDeliveryMethodName() %></td>
+									<td class="center"><%=bdb.getDeliveryMethodPrice()%>円</td>
 								</tr>
-								<tr>
-									<td class="center">サンプル商品名3</td>
-									<td class="center">333333333円</td>
-								</tr>
-								<tr>
-									<td class="center">サンプル</td>
-									<td class="center">123456789円</td>
-								</tr>
+								<%
+									}
+								%>
 							</tbody>
 						</table>
 					</div>
